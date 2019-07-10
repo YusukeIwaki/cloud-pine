@@ -1,8 +1,9 @@
 version: '3'
 services:
   cloud9:
-    # 自前でビルドするとき用↓
-    build: ./
+    # # 自前でビルドするとき用↓
+    # build: ./
+    image: yusukeiwaki/cloud-pine-workspace:latest
     volumes:
       - workspace-data:/usr/src/app
     ports:
