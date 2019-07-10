@@ -6,8 +6,6 @@ services:
     image: yusukeiwaki/cloud-pine-workspace:latest
     volumes:
       - workspace-data:/usr/src/app
-    ports:
-      - 8888:8888
 
 volumes:
   workspace-data:
