@@ -1,0 +1,13 @@
+version: '3'
+services:
+  cloud9:
+    # 自前でビルドするとき用↓
+    build: ./
+    volumes:
+      - workspace-data:/usr/src/app
+    ports:
+      - 8888:8888
+
+volumes:
+  workspace-data:
+    driver: local
