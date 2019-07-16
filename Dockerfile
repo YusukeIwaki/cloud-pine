@@ -9,9 +9,12 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
         curl \
         git \
         locales \
+        openssh-client \
+        nano \
         nodejs \
         python \
         sudo \
+        wget \
         && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 RUN sed -i -e 's/# \(en_US\.UTF-8 .*\)/\1/' /etc/locale.gen
