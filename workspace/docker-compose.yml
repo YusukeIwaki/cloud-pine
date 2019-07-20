@@ -10,3 +10,8 @@ services:
 volumes:
   workspace-data:
     driver: local
+
+networks:
+  default:
+    external: 
+      name: cloud-pine-master
