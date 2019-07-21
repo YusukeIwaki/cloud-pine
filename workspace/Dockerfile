@@ -31,6 +31,7 @@ RUN mkdir -p /c9 /usr/src/app && chown $USERNAME:$USERNAME /c9 /usr/src/app
 USER $USERNAME
 RUN git clone https://github.com/c9/core.git /c9/sdk --depth 1
 RUN cd /c9/sdk/ && ./scripts/install-sdk.sh
+RUN sed -i -e 's/"dark"/"flat-light"/' /c9/sdk/configs/ide/default.js
 
 USER root
 # SOME ADDITIONAL INSTALL HERE...
