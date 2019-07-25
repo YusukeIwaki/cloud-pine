@@ -1,0 +1,13 @@
+version: "3"
+services:
+  api:
+    image: yusukeiwaki/cloud-pine-admin
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    command: python3 main.py
+    environment:
+      - PORT=5042
+    ports:
+      - '5042:5042'
