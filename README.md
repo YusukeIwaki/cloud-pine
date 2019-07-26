@@ -18,6 +18,7 @@ docker swarmでクラスタを組む。
 
 ```
 docker network create --driver overlay --internal cloud-pine-master
+docker network create --driver overlay --internal cloud-pine-admin
 ```
 
 ## リバースプロキシのデプロイ
@@ -27,6 +28,15 @@ docker network create --driver overlay --internal cloud-pine-master
 cd reverse_proxy
 docker stack deploy --compose-file docker-compose.yml reverse_proxy
 ```
+
+## 管理API(手抜き)のデプロイ
+
+
+```
+cd admin
+docker stack deploy --compose-file docker-compose.yml admin
+```
+
 
 ## ワークスペースの追加
 

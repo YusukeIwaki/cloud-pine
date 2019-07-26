@@ -9,5 +9,12 @@ services:
     command: python3 main.py
     environment:
       - PORT=5042
-    ports:
-      - '5042:5042'
+    deploy:
+      placement:
+        constraints:
+          - 'node.role==manager'
+
+networks:
+  default:
+    external:
+      name: cloud-pine-admin

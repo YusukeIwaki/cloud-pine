@@ -15,6 +15,7 @@ services:
       - /etc/letsencrypt/live/c9work.net/fullchain.pem:/etc/nginx/c9work.net.crt:ro
     depends_on:
       - oauth2_proxy
+      - nginx_admin
       - nginx_back
     deploy:
       placement:
@@ -31,12 +32,25 @@ services:
       - OAUTH2_PROXY_COOKIE_NAME
       - OAUTH2_PROXY_COOKIE_SECRET
       - OAUTH2_PROXY_COOKIE_DOMAIN=c9work.net
-      - OAUTH2_PROXY_WHITELIST_DOMAINS=.ide.c9work.net
+      - OAUTH2_PROXY_WHITELIST_DOMAINS=.ide.c9work.net,admin.c9work.net
       - OAUTH2_PROXY_REDIRECT_URL=https://auth.c9work.net/oauth2/callback
       - OAUTH2_PROXY_HTTP_ADDRESS=0.0.0.0:4180
       - OAUTH2_PROXY_SET_XAUTHREQUEST=true
     ports:
       - '4180:4180'
+
+  nginx_admin:
+    image: nginx:stable-alpine
+    volumes:
+      - ./nginx_admin.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - default
+      - admin
+    deploy:
+      placement:
+        constraints:
+          - 'node.role==manager'
+
 
   nginx_back: # stackへのルーティング担当
     image: nginx:stable-alpine
@@ -51,3 +65,6 @@ networks:
   default:
     external:
       name: cloud-pine-master
+  admin:
+    external:
+      name: cloud-pine-admin
