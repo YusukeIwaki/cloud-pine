@@ -28,6 +28,14 @@ RUN echo $USERNAME "ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USERNAME
 
 RUN mkdir -p /c9 /usr/src/app && chown $USERNAME:$USERNAME /c9 /usr/src/app
 
+ENV ENTRYKIT_VERSION 0.4.0
+RUN wget https://github.com/progrium/entrykit/releases/download/v${ENTRYKIT_VERSION}/entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+  && tar -xvzf entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+  && rm entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
+  && mv entrykit /bin/entrykit \
+  && chmod +x /bin/entrykit \
+  && entrykit --symlink
+
 USER $USERNAME
 RUN git clone https://github.com/c9/core.git /c9/sdk --depth 1
 RUN cd /c9/sdk/ && ./scripts/install-sdk.sh
@@ -43,4 +51,7 @@ EXPOSE 8080
 ENV C9_USER=$USERNAME
 WORKDIR /usr/src/app
 EXPOSE 8888
+
+ENTRYPOINT [ "prehook", "sudo apt-get update", "--" ]
+
 CMD node /c9/sdk/server.js -w /usr/src/app --port 8888 --listen 0.0.0.0 --auth :
