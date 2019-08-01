@@ -47,12 +47,12 @@ class DockerHandler:
   def list_workspaces(self):
     stack_services = self._get_all_stack_services()
     labels = frozenset(map(lambda service: service.attrs['Spec']['Labels']['com.docker.stack.namespace'], stack_services))
-    return labels - frozenset(('reverse_proxy',))
+    return labels - frozenset(('reverse_proxy', 'admin'))
 
   def show_workspace(self, name):
     stack_services = self._get_stack_services(name)
     labels = frozenset(map(lambda service: service.attrs['Spec']['Labels']['com.docker.stack.namespace'], stack_services))
-    if len(labels - frozenset(('reverse_proxy',))) == 0:
+    if len(labels - frozenset(('reverse_proxy', 'admin'))) == 0:
       return None
     else:
       return name
@@ -75,6 +75,10 @@ class DockerHandler:
     # self._remove_volumes_for(name, node_ids)
 
 api = responder.API()
+
+@api.route("/")
+def index(req, res):
+  res.html = api.template("index.html")
 
 @api.route("/workspaces")
 class WorkspaceCollectionResource:

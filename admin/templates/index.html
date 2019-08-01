@@ -1,0 +1,155 @@
+<html>
+  <head>
+    <title>cloud-pine admin</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-blue.min.css"/>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function (evt) {
+  onInit();
+}, false);
+
+function onInit() {
+  const addDialog = document.getElementById("dialog_add_workspace");
+  document.getElementById("btn_add_workspace").addEventListener("click", function(evt) {
+    clearEditorWorkspace();
+    addDialog.showModal();
+  }, false);
+  document.querySelector("#dialog_add_workspace .ok").addEventListener("click", function(evt) {
+    onDialogAddWorkspaceOkClicked();
+    addDialog.close();
+  }, false);
+  document.querySelector("#dialog_add_workspace .cancel").addEventListener("click", function(evt) {
+    addDialog.close();
+  }, false);
+
+  const removeDialog = document.getElementById("dialog_remove_workspace");
+  document.querySelector("#dialog_remove_workspace .ok").addEventListener("click", function(evt) {
+    onDialogRemoveWorkspaceOkClicked();
+    removeDialog.close();
+  }, false);
+  document.querySelector("#dialog_remove_workspace .cancel").addEventListener("click", function(evt) {
+    removeDialog.close();
+  }, false);
+
+  requestGettingWorkspaces().then(workspaces => {
+    appendWorkspaces(workspaces);
+  })
+}
+
+function clearEditorWorkspace() {
+  const editor = document.getElementById("editor_workspace");
+  editor.value = "";
+}
+
+function onDialogAddWorkspaceOkClicked() {
+  const editor = document.getElementById("editor_workspace");
+  const workspace = editor.value.trim();
+  if (workspace.length == 0) return;
+
+  requestAddingWorkspace(workspace).then(_ => {
+    appendWorkspaces(new Array(workspace));
+  })
+}
+
+function onDialogRemoveWorkspaceOkClicked() {
+  const removeDialog = document.getElementById("dialog_remove_workspace");
+  const workspace = removeDialog.getAttribute("data-workspace");
+  if (!workspace || workspace.length == 0) return;
+
+  requestRemovingWorkspace(workspace).then(_ => {
+    location.reload();
+  })
+}
+
+
+function appendWorkspaces(workspaces) {
+  const target = document.getElementById("workspaces");
+  workspaces.forEach(workspace => {
+    // <span class="mdl-chip">
+    //   <span class="mdl-chip__text">hoge</span>
+    //   <a href="#" data-workspace="hoge" class="mdl-chip__action"><i class="material-icons">cancel</i></a>
+    // </span>
+
+    const span = document.createElement("a");
+    span.setAttribute("href", `https://${workspace}.ide.c9work.net/`);
+    span.setAttribute("class", "mdl-chip");
+
+    const innerSpan = document.createElement("span");
+    innerSpan.setAttribute("class", "mdl-chip__text");
+    innerSpan.innerText = workspace;
+    span.appendChild(innerSpan);
+
+    const cancelButton = document.createElement("a");
+    cancelButton.innerHTML = '<i class="material-icons">cancel</i>';
+    cancelButton.setAttribute("href", "#");
+    cancelButton.setAttribute("class", "mdl-chip__action");
+    cancelButton.setAttribute("data-workspace", workspace);
+    cancelButton.addEventListener("click", function(evt) {
+      const removeDialog = document.getElementById("dialog_remove_workspace");
+      removeDialog.setAttribute("data-workspace", this.getAttribute("data-workspace"));
+      removeDialog.showModal();
+      evt.stopPropagation();
+      evt.preventDefault();
+    }, false);
+    span.appendChild(cancelButton);
+
+    target.appendChild(span);
+  });
+}
+
+async function requestGettingWorkspaces() {
+  const response = await fetch('/workspaces');
+  const json = await response.json();
+  return json["workspaces"];
+}
+
+function requestAddingWorkspace(name) {
+  return fetch('/workspaces', {
+    method: "POST",
+    headers: { "Content-Type": "application/json; charset=utf-8" },
+    body: JSON.stringify({"workspace": name})
+  });
+}
+
+function requestRemovingWorkspace(name) {
+  return fetch(`/workspaces/${name}`, { method: "DELETE" });
+}
+    </script>
+  </head>
+  <body>
+    <div id="workspaces">
+
+    </div>
+    <button id="btn_add_workspace" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+      <i class="material-icons">add</i>
+    </button>
+
+    <dialog id="dialog_add_workspace" class="mdl-dialog">
+      <h4 class="mdl-dialog__title">Add workspace</h4>
+      <div class="mdl-dialog__content">
+        <form action="#">
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="editor_workspace">
+            <label class="mdl-textfield__label" for="editor_workspace">Workspace</label>
+          </div>
+        </form>
+      </div>
+      <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button ok">ADD</button>
+        <button type="button" class="mdl-button cancel">Cancel</button>
+      </div>
+    </dialog>
+
+    <dialog id="dialog_remove_workspace" class="mdl-dialog">
+      <h4 class="mdl-dialog__title">Remove workspace</h4>
+      <div class="mdl-dialog__content">
+        Do you really remove the workspace?
+      </div>
+      <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button ok">REMOVE</button>
+        <button type="button" class="mdl-button cancel">Cancel</button>
+      </div>
+    </dialog>
+  </body>
+</html>
