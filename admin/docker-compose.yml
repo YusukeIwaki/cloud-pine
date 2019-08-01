@@ -9,6 +9,7 @@ services:
     command: python3 main.py
     environment:
       - PORT=5042
+      - C9_WORKSPACE_DOCKER_COMPOSE_URL
     ports:
       - 5042
     deploy:

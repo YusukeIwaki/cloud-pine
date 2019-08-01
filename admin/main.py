@@ -61,7 +61,9 @@ class DockerHandler:
     import re
     if re.match(r'^[a-z0-9]+(-[a-z0-9]+)?$', name):
       from urllib.request import urlopen
-      raw_compose_file = urlopen('https://raw.githubusercontent.com/YusukeIwaki/cloud-pine/master/workspace/docker-compose.yml').read()
+      import os
+      url = os.getenv('C9_WORKSPACE_DOCKER_COMPOSE_URL', 'https://raw.githubusercontent.com/YusukeIwaki/cloud-pine/master/workspace/docker-compose.yml')
+      raw_compose_file = urlopen(url).read()
 
       import subprocess
       subprocess.run(['docker', 'stack', 'deploy', '--compose-file', '-', name], input = raw_compose_file, check=True)
