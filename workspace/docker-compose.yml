@@ -1,9 +1,9 @@
 version: '3'
 services:
   cloud9:
-    # # 自前でビルドするとき用↓
-    # build: ./
     image: yusukeiwaki/cloud-pine-workspace:latest
+    environment:
+      - C9_WORKSPACE_INIT_SCRIPT_URL
     volumes:
       - workspace-data:/usr/src/app
 

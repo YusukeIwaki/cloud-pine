@@ -42,7 +42,9 @@ RUN cd /c9/sdk/ && ./scripts/install-sdk.sh
 RUN sed -i -e 's/"dark"/"flat-light"/' /c9/sdk/configs/ide/default.js
 
 USER root
-# SOME ADDITIONAL INSTALL HERE...
+
+RUN echo 'if [ -n "$C9_WORKSPACE_INIT_SCRIPT_URL" ]; then curl $C9_WORKSPACE_INIT_SCRIPT_URL | bash; fi' > /init_script.sh
+
 USER $USERNAME
 
 ENV PORT=8080
@@ -52,6 +54,6 @@ ENV C9_USER=$USERNAME
 WORKDIR /usr/src/app
 EXPOSE 8888
 
-ENTRYPOINT [ "prehook", "sudo apt-get update", "--" ]
+ENTRYPOINT [ "prehook", "sudo apt-get update", "bash /init_script.sh", "--" ]
 
 CMD node /c9/sdk/server.js -w /usr/src/app --port 8888 --listen 0.0.0.0 --auth :
