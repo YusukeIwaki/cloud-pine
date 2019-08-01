@@ -6,6 +6,8 @@ services:
       - C9_WORKSPACE_INIT_SCRIPT_URL
     volumes:
       - workspace-data:/usr/src/app
+    ports:
+      - 8888
 
 volumes:
   workspace-data:
