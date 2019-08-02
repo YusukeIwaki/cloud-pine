@@ -28,6 +28,9 @@ RUN echo $USERNAME "ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USERNAME
 
 RUN mkdir -p /c9 /usr/src/app && chown $USERNAME:$USERNAME /c9 /usr/src/app
 
+RUN curl -L https://www.npmjs.com/install.sh | sh
+RUN npm install -g c9
+
 ENV ENTRYKIT_VERSION 0.4.0
 RUN wget https://github.com/progrium/entrykit/releases/download/v${ENTRYKIT_VERSION}/entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
   && tar -xvzf entrykit_${ENTRYKIT_VERSION}_Linux_x86_64.tgz \
