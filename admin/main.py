@@ -69,12 +69,12 @@ class DockerHandler:
       subprocess.run(['docker', 'stack', 'deploy', '--compose-file', '-', name], input = raw_compose_file, check=True)
 
   def remove_workspace(self, name):
-    # https://github.com/docker/cli/blob/0904fbfc77dbd4b6296c56e68be573b889d049e3/cli/command/stack/swarm/remove.go#L18
-    stack_services = self._get_stack_services(name)
-    services_without_reverse_proxy = filter(lambda service: service.attrs['Spec']['Labels']['com.docker.stack.namespace'] != 'reverse_proxy', stack_services)
-    node_ids = self._get_node_ids_for(name)
-    self._remove_services(services_without_reverse_proxy)
-    # self._remove_volumes_for(name, node_ids)
+    if name == 'reverse_proxy' or name == 'admin':
+      return
+    import re
+    if re.match(r'^[a-z0-9]+(-[a-z0-9]+)?$', name):
+      import subprocess
+      subprocess.run(['docker', 'stack', 'rm', name], check=True)
 
 api = responder.API()
 
