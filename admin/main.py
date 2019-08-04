@@ -59,7 +59,7 @@ class DockerHandler:
 
   def add_workspace(self, name):
     import re
-    if re.match(r'^[a-z0-9]+(-[a-z0-9]+)?$', name):
+    if re.match(r'^[a-z0-9]+(-[a-z0-9]+)*$', name):
       from urllib.request import urlopen
       import os
       url = os.getenv('C9_WORKSPACE_DOCKER_COMPOSE_URL', 'https://raw.githubusercontent.com/YusukeIwaki/cloud-pine/master/workspace/docker-compose.yml')
@@ -72,7 +72,7 @@ class DockerHandler:
     if name == 'reverse_proxy' or name == 'admin':
       return
     import re
-    if re.match(r'^[a-z0-9]+(-[a-z0-9]+)?$', name):
+    if re.match(r'^[a-z0-9]+(-[a-z0-9]+)*$', name):
       import subprocess
       subprocess.run(['docker', 'stack', 'rm', name], check=True)
 
