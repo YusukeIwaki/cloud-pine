@@ -2,6 +2,8 @@
 
 http://yusukeiwaki.hatenablog.com/entry/2019/07/13/my-cloud9-alternative
 
+![cloud-pine](https://user-images.githubusercontent.com/11763113/64035114-f0f4a100-cb8a-11e9-8f94-6409a0c5e7fb.gif)
+
 # Setup
 
 ## マシンを２，３台用意
